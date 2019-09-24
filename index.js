@@ -75,6 +75,11 @@ client.on('message', async message => {
         addUser(member.user.discriminator);
     }
 
+    if(command === "allCounts"){
+        let tempArray = getBankArray();
+        
+    }
+
     if (command === "test") {
         let member = message.mentions.members.first();
         if (!member) return;
@@ -112,6 +117,15 @@ function getTheKhepris(userDiscrim) {
         return -420;
     }
 
+}
+
+function getBankArray(){
+    var bankArray = fs.readFileSync('./khepriStorage.txt', 'utf-8').split(',');
+    for (let x = 0; x < bankArray.length; x++) {
+        bankArray[x] = bankArray[x].trim();
+    }
+
+    return bankArray;
 }
 
 function saveTheKhepris(userDiscrim, pointsToChange) {
