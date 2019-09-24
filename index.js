@@ -43,7 +43,7 @@ client.on('message', async message => {
     if (command === "check") {
         let member = message.mentions.members.first();
         if (!member) return;
-        let num = getTheKhepris(member.user.tag);
+        let num = getTheKhepris(member.user.discriminator);
         message.channel.send(member.user.username + " Has " + num + " Khepris!");
     }
 
@@ -51,7 +51,7 @@ client.on('message', async message => {
         let member = message.mentions.members.first();
         if (!member) return;
         if (parseInt(args[0], 10) < 6 && parseInt(args[0], 10) > 0) {
-            let num = saveTheKhepris(member.user.tag, parseInt(args[0], 10));
+            let num = saveTheKhepris(member.user.discriminator, parseInt(args[0], 10));
             message.channel.send(member.username + " Now Has " + num + " Khepris!");
         }else{
             message.channel.send(message.author.username + " you must give Khepris within the range 1 to 5");
@@ -62,23 +62,23 @@ client.on('message', async message => {
         let member = message.mentions.members.first();
         if (!member) return;
         if (parseInt(args[0], 10) < 0 && parseInt(args[0], 10) > -6) {
-            let num = saveTheKhepris(member.user.tag, parseInt(args[0], 10));
+            let num = saveTheKhepris(member.user.discriminator, parseInt(args[0], 10));
             message.channel.send(member.username + " Now Has " + num + " Khepris!");
         }else{
             message.channel.send(message.author.username + " you must take Khepris within the range -5 to -1");
         }
     }
 
-    if (command === "add") {
+    if (command === "adduser") {
         let member = message.mentions.members.first();
         if (!member) return;
-        console.log(member.user.tag);
+        addUser(member.user.discriminator);
     }
 
     if (command === "test") {
         let member = message.mentions.members.first();
         if (!member) return;
-
+        console.log(member.user.discriminator);
     }
 })
 
@@ -86,33 +86,47 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getTheKhepris(userTag) {
+function addUser(userDiscrim){
+    var bankArray = fs.readFileSync('./khepriStorage.txt', 'utf-8').split(',');
+    for (let x = 0; x < bankArray.length; x++) {
+        bankArray[x] = bankArray[x].trim();
+    }
+    if (bankArray.includes(userDiscrim.trim())) {
+        console.log("User Already In System");
+    }else{
+        bankArray.push(userDiscrim.trim(),"0");
+    }
+    fs.writeFileSync('./khepriStorage.txt', bankArray.toString());
+
+}
+
+function getTheKhepris(userDiscrim) {
     var bankArray = fs.readFileSync('./khepriStorage.txt', 'utf-8').split(',');
     for (let x = 0; x < bankArray.length; x++) {
         bankArray[x] = bankArray[x].trim();
     }
 
-    if (bankArray.includes(userTag.trim())) {
-        return bankArray[(bankArray.indexOf(userTag.trim())) + 1];
+    if (bankArray.includes(userDiscrim.trim())) {
+        return bankArray[(bankArray.indexOf(userDiscrim.trim())) + 1];
     } else {
         return -420;
     }
 
 }
 
-function saveTheKhepris(userTag, pointsToChange) {
+function saveTheKhepris(userDiscrim, pointsToChange) {
     var bankArray = fs.readFileSync('./khepriStorage.txt', 'utf-8').split(',');
     for (let x = 0; x < bankArray.length; x++) {
         bankArray[x] = bankArray[x].trim();
     }
-    if (bankArray.includes(userTag.trim())) {
-        let temp = bankArray[(bankArray.indexOf(userTag.trim())) + 1];
+    if (bankArray.includes(userDiscrim.trim())) {
+        let temp = bankArray[(bankArray.indexOf(userDiscrim.trim())) + 1];
         let tempInt = parseInt(temp, 10);
         tempInt += pointsToChange;
-        bankArray[(bankArray.indexOf(userTag.trim())) + 1] = tempInt.toString();
+        bankArray[(bankArray.indexOf(userDiscrim.trim())) + 1] = tempInt.toString();
     }
     fs.writeFileSync('./khepriStorage.txt', bankArray.toString());
-    return bankArray[(bankArray.indexOf(userTag.trim())) + 1];
+    return bankArray[(bankArray.indexOf(userDiscrim.trim())) + 1];
 }
 
 // login to Discord with your app's token
