@@ -26,23 +26,47 @@ client.on('message', async message => {
     const command = args.shift().toLowerCase();
 
     if (command === "hello") {
-        message.channel.send('Greetings, friend!')
+        message.channel.send('Greetings, friend!');
     }
 
     if (command === "f") {
-        message.channel.send('[F] for respect')
+        message.channel.send('[F] for respect');
+        message.delete().catch(O_o => { });
     }
 
     if (command === "joke") {
         var ran = getRndInteger(1, jokes.length);
         message.channel.send(jokes[ran - 1]);
+        message.delete().catch(O_o => { });
     }
 
     if (command === "check") {
         let member = message.mentions.members.first();
-        if (!member) return; 
-        let num  = getTheKhepris(member.user.tag);
-        message.channel.send(member.user.username + " Has " + num +" Khepris!");
+        if (!member) return;
+        let num = getTheKhepris(member.user.tag);
+        message.channel.send(member.user.username + " Has " + num + " Khepris!");
+    }
+
+    if (command === "give") {
+        let member = message.mentions.members.first();
+        if (!member) return;
+        if (parseInt(args[0], 10) < 6 && parseInt(args[0], 10) > 0) {
+            let num = saveTheKhepris(member.user.tag, parseInt(args[0], 10));
+            message.channel.send(member.username + " Now Has " + num + " Khepris!");
+        }else{
+            message.channel.send(message.author.username + " you must give Khepris within the range 1 to 5");
+        }
+    }
+
+    if (command === "take") {
+        let member = message.mentions.members.first();
+        if (!member) return;
+        if (parseInt(args[0], 10) < 0 && parseInt(args[0], 10) > -6) {
+            let num = saveTheKhepris(member.user.tag, parseInt(args[0], 10));
+            message.channel.send(member.username + " Now Has " + num + " Khepris!");
+        }else{
+            message.channel.send(message.author.username + " you must take Khepris within the range -5 to -1");
+        }
     }
 
     if (command === "add") {
@@ -54,7 +78,6 @@ client.on('message', async message => {
     if (command === "test") {
         let member = message.mentions.members.first();
         if (!member) return;
-        saveTheKhepris(member.user.tag);
 
     }
 })
@@ -77,7 +100,7 @@ function getTheKhepris(userTag) {
 
 }
 
-function saveTheKhepris(userTag) {
+function saveTheKhepris(userTag, pointsToChange) {
     var bankArray = fs.readFileSync('./khepriStorage.txt', 'utf-8').split(',');
     for (let x = 0; x < bankArray.length; x++) {
         bankArray[x] = bankArray[x].trim();
@@ -85,10 +108,11 @@ function saveTheKhepris(userTag) {
     if (bankArray.includes(userTag.trim())) {
         let temp = bankArray[(bankArray.indexOf(userTag.trim())) + 1];
         let tempInt = parseInt(temp, 10);
-        tempInt++;
+        tempInt += pointsToChange;
         bankArray[(bankArray.indexOf(userTag.trim())) + 1] = tempInt.toString();
     }
     fs.writeFileSync('./khepriStorage.txt', bankArray.toString());
+    return bankArray[(bankArray.indexOf(userTag.trim())) + 1];
 }
 
 // login to Discord with your app's token
