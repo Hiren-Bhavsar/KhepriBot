@@ -34,6 +34,10 @@ client.on('message', async message => {
         message.delete().catch(O_o => { });
     }
 
+    if (command === "goodbot"){
+        message.channel.send(' <3 Thank you :D ');
+    }
+
     if (command === "joke") {
         var ran = getRndInteger(1, jokes.length);
         message.channel.send(jokes[ran - 1]);
@@ -83,7 +87,7 @@ client.on('message', async message => {
     if (command === "test") {
         let member = message.mentions.members.first();
         if (!member) return;
-        console.log(member.user.discriminator);
+        console.log(member.user.token);
     }
 })
 
