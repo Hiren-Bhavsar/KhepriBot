@@ -52,7 +52,7 @@ client.on('message', async message => {
         if (!member) return;
         if (parseInt(args[0], 10) < 6 && parseInt(args[0], 10) > 0) {
             let num = saveTheKhepris(member.user.discriminator, parseInt(args[0], 10));
-            message.channel.send(member.username + " Now Has " + num + " Khepris!");
+            message.channel.send(member.user.username + " Now Has " + num + " Khepris!");
         }else{
             message.channel.send(message.author.username + " you must give Khepris within the range 1 to 5");
         }
@@ -63,7 +63,7 @@ client.on('message', async message => {
         if (!member) return;
         if (parseInt(args[0], 10) < 0 && parseInt(args[0], 10) > -6) {
             let num = saveTheKhepris(member.user.discriminator, parseInt(args[0], 10));
-            message.channel.send(member.username + " Now Has " + num + " Khepris!");
+            message.channel.send(member.user.username + " Now Has " + num + " Khepris!");
         }else{
             message.channel.send(message.author.username + " you must take Khepris within the range -5 to -1");
         }
