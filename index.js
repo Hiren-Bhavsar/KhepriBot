@@ -34,7 +34,7 @@ client.on('message', async message => {
         message.delete().catch(O_o => { });
     }
 
-    if (command === "goodbot"){
+    if (command === "goodbot") {
         message.channel.send(' <3 Thank you :D ');
     }
 
@@ -57,7 +57,7 @@ client.on('message', async message => {
         if (parseInt(args[0], 10) < 6 && parseInt(args[0], 10) > 0) {
             let num = saveTheKhepris(member.user.discriminator, parseInt(args[0], 10));
             message.channel.send(member.user.username + " Now Has " + num + " Khepris!");
-        }else{
+        } else {
             message.channel.send(message.author.username + " you must give Khepris within the range 1 to 5");
         }
     }
@@ -65,11 +65,11 @@ client.on('message', async message => {
     if (command === "take") {
         let member = message.mentions.members.first();
         if (!member) return;
-        if (parseInt(args[0], 10) < 0 && parseInt(args[0], 10) > -6) {
-            let num = saveTheKhepris(member.user.discriminator, parseInt(args[0], 10));
+        if (parseInt(args[0], 10) < 6 && parseInt(args[0], 10) > 0) {
+            let num = saveTheKhepris(member.user.discriminator, parseInt(args[0], 10) * -1);
             message.channel.send(member.user.username + " Now Has " + num + " Khepris!");
-        }else{
-            message.channel.send(message.author.username + " you must take Khepris within the range -5 to -1");
+        } else {
+            message.channel.send(message.author.username + " you must take Khepris within the range 1 to 5");
         }
     }
 
@@ -79,15 +79,30 @@ client.on('message', async message => {
         addUser(member.user.discriminator);
     }
 
-    if(command === "allCounts"){
-        let tempArray = getBankArray();
-        
+    if (command === "checkall") {
+        var formatter = 0;
+        var toPrint = "";
+        let tempArray = getBankArray().reverse();
+        for (let x = 1; x < tempArray.length; x++) {
+            if (x % 3 == 0) {
+
+            } else {
+                toPrint += (" " + tempArray[x - 1]);
+                formatter++;
+            }
+
+            if (formatter == 2) {
+                message.channel.send(toPrint);
+                toPrint = "";
+                formatter = 0;
+            }
+        }
     }
 
     if (command === "test") {
         let member = message.mentions.members.first();
         if (!member) return;
-        console.log(member.user.token);
+        console.log(member.user.id);
     }
 })
 
@@ -95,15 +110,15 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function addUser(userDiscrim){
+function addUser(userDiscrim) {
     var bankArray = fs.readFileSync('./khepriStorage.txt', 'utf-8').split(',');
     for (let x = 0; x < bankArray.length; x++) {
         bankArray[x] = bankArray[x].trim();
     }
     if (bankArray.includes(userDiscrim.trim())) {
         console.log("User Already In System");
-    }else{
-        bankArray.push(userDiscrim.trim(),"0");
+    } else {
+        bankArray.push(userDiscrim.trim(), "0");
     }
     fs.writeFileSync('./khepriStorage.txt', bankArray.toString());
 
@@ -123,7 +138,7 @@ function getTheKhepris(userDiscrim) {
 
 }
 
-function getBankArray(){
+function getBankArray() {
     var bankArray = fs.readFileSync('./khepriStorage.txt', 'utf-8').split(',');
     for (let x = 0; x < bankArray.length; x++) {
         bankArray[x] = bankArray[x].trim();
