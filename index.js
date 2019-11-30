@@ -92,7 +92,8 @@ client.on('message', async message => {
             }
 
             if (formatter == 2) {
-                message.channel.send(toPrint);
+                toPrint = toPrint.replace(" ","");
+                message.channel.send(toPrint.replace(" ",": "));
                 toPrint = "";
                 formatter = 0;
             }
